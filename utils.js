@@ -1,7 +1,7 @@
 function formatArray(i) {
   let chart1 = new Array(8)
   let chart2 = new Array(13)
-  if(i %6 ==3) {
+  if(i %6 ==2) {
     chart1[0] = '2-2LC'
     chart1[4] = '2-2RC'
     chart2[0] = '3-3LC'
