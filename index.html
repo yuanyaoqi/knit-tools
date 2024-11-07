@@ -107,9 +107,10 @@
                 ["p", "k", "knitDot"],
                 ["tbl", "n", "knitDot"],
                 ["M1L", ":", "knitDot"],
+                ["B", "B", "-apple-system"],
             ];
             const createGrid = function () {
-                const rows = 100;
+                const rows = 150;
                 const grid = [];
                 for (let i = 0; i < rows; i++) {
                     const columns = Math.floor(i / 2);
@@ -127,7 +128,7 @@
             const gridData = createGrid();
 
             const rows = gridData.length;
-            const cols = 60;
+            const cols = 100;
             let currentRow = 0;
             canvas.width = cols * colSize;
             canvas.height = rows * rowSize;
@@ -141,6 +142,7 @@
                         const x = col * colSize;
                         const y = canvas.height - (row + 1) * rowSize;
                         // Check if the cell is below the current row
+                        gridCtx.lineWidth = 1
                         if (row < currentRow) {
                             ctx.fillStyle = overFillColor; // gray background
                             ctx.fillRect(x, y, cols, rowSize);
@@ -150,6 +152,14 @@
                         }
                         gridCtx.strokeStyle = gridLineColor;
                         gridCtx.strokeRect(x, y, colSize, rowSize);
+                        if([8, 13, 22, 27, 40, 45, 54,59].includes(col)) {
+                            gridCtx.strokeStyle = 'blue';
+                            gridCtx.lineWidth = 3
+                            gridCtx.beginPath()
+                            gridCtx.moveTo(x, y);
+                            gridCtx.lineTo(x, y+rowSize);
+                            gridCtx.stroke();
+                        }
                     }
                 }
             }
