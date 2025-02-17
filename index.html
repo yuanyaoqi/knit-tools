@@ -4,83 +4,20 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dynamic Canvas Grid</title>
-        <style>
-            #controls {
-                margin-bottom: 10px;
-            }
-            #gridCanvas {
-                border: 1px solid black;
-            }
-            body {
-                /* background: #181a1b; */
-            }
-            @font-face {
-                font-family: "knitDash";
-                src: url("./StitchMasteryDash.ttf");
-            }
-
-            @font-face {
-                font-family: "knitDashCable";
-                src: url("./StitchMasteryDashCable.ttf");
-            }
-
-            @font-face {
-                font-family: "knitDashCableEH";
-                src: url("./StitchMasteryDashCableEH.ttf");
-            }
-
-            @font-face {
-                font-family: "knitDot";
-                src: url("./StitchMasteryDot.ttf");
-            }
-
-            @font-face {
-                font-family: "knitDotCable";
-                src: url("./StitchMasteryDotCable.ttf");
-            }
-
-            @font-face {
-                font-family: "knitDotCableEH";
-                src: url("./StitchMasteryDotCableEH.ttf");
-            }
-
-            .test {
-                font-family: knitDashCableEH;
-                color: white;
-                font-size: 12px;
-            }
-            .canvas-section {
-                padding: 10px;
-                position: absolute;
-            }
-            #canvas {
-                position: absolute;
-                left: 0;
-                right: 0;
-            }
-            #gridLine {
-                position: absolute;
-                left: 0;
-                right: 0;
-                z-index: 1000;
-            }
-            .next-button {
-                width: 100px;
-                height: 50px;
-                position: fixed;
-                z-index: 2000;
-                right: 200px;
-                bottom: 100px;
-            }
-        </style>
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
+        <select onchange="chartChange(this.value)">
+            <option value="emily">艾米丽帽子</option>
+            <option value="dove">多芬围巾</option>
+        </select>
         <button onclick="nextRow()" class="next-button">下一行</button>
         <div class="canvas-section">
             <canvas id="canvas"></canvas>
             <canvas id="gridLine"></canvas>
         </div>
         <div style="color: white">
+            <p style="font-family: knitDotCable">!</p>
             <p style="font-family: knitDotCableEH">!</p>
             <p style="font-family: knitDash">!</p>
             <p style="font-family: knitDot">!</p>
@@ -104,88 +41,75 @@
                 ["1-1RTP", ")", "knitDotCableEH", 2],
                 ["1-1LTP", "*", "knitDotCableEH", 2],
                 ["k", "k", "knitDash"],
-                ["p", "k", "knitDot"],
+                ["p", "p", "knitDash"],
                 ["tbl", "n", "knitDot"],
-                ["M1L", ":", "knitDot"],
+                ["m1l", ":", "knitDot"],
+                ["ssk", "V", "knitDot"],
+                ["sssk", "t", "knitDot"],
+                ["k2tog", "U", "knitDot"],
+                ["bo", "S", "knitDot"],
                 ["B", "B", "-apple-system"],
+                ["yo", "o", "knitDash"],
+                ["v", "*", "knitDash"],
             ];
-            const createGrid = function () {
-                const rows = 150;
-                const grid = [];
-                for (let i = 0; i < rows; i++) {
-                    const columns = Math.floor(i / 2);
-                    let row = formatArray(i).splice(0, columns + 1);
-                    if ((i + 1) % 2 == 1) {
-                        row[columns] = "M1L";
-                    }
-                    grid.push(row);
-                }
 
-                // 打印结果
-                console.log(grid);
-                return grid;
-            };
-            const gridData = createGrid();
 
-            const rows = gridData.length;
-            const cols = 100;
-            let currentRow = 0;
-            canvas.width = cols * colSize;
-            canvas.height = rows * rowSize;
-            gridLine.width = cols * colSize;
-            gridLine.height = rows * rowSize;
-            // Draw the grid
-            function drawGrid() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                for (let row = 0; row < rows; row++) {
-                    for (let col = 0; col <= Math.floor(row / 2); col++) {
-                        const x = col * colSize;
-                        const y = canvas.height - (row + 1) * rowSize;
-                        // Check if the cell is below the current row
-                        gridCtx.lineWidth = 1
-                        if (row < currentRow) {
-                            ctx.fillStyle = overFillColor; // gray background
-                            ctx.fillRect(x, y, cols, rowSize);
-                        } else {
-                            ctx.fillStyle = lineFillColor[row % 2]; // gray background
-                            ctx.fillRect(x, y, colSize, rowSize);
-                        }
-                        gridCtx.strokeStyle = gridLineColor;
-                        gridCtx.strokeRect(x, y, colSize, rowSize);
-                        if([8, 13, 22, 27, 40, 45, 54,59].includes(col)) {
-                            gridCtx.strokeStyle = 'blue';
-                            gridCtx.lineWidth = 3
-                            gridCtx.beginPath()
-                            gridCtx.moveTo(x, y);
-                            gridCtx.lineTo(x, y+rowSize);
-                            gridCtx.stroke();
-                        }
-                    }
-                }
-            }
 
-            function drawFont() {
+            function drawFont(gridData) {
                 gridData.forEach((rowData, rowIndex) => {
-                    drawLineFont(rowIndex);
+                    drawLineFont(rowData, rowIndex);
                 });
             }
 
-            function drawLineFont(rowIndex) {
-                var rowData = gridData[rowIndex];
+            function drawLineFont(rowData, rowIndex) {
                 var yaxis = canvas.height - (rowIndex + 0.5) * rowSize;
+                var y = canvas.height - (rowIndex + 1) * rowSize;
+                
+                // 绘制每个格子的背景和边框，包括 null 的格子
+                rowData.forEach((colData, colIndex) => {
+                    const x = colIndex * colSize;
+                    // 绘制背景 - 无论内容是否为 null 都绘制
+                    ctx.fillStyle = lineFillColor[rowIndex % 2];
+                    ctx.fillRect(x, y, colSize, rowSize);
+                    
+                    // 绘制边框
+                    gridCtx.lineWidth = 1;
+                    gridCtx.strokeStyle = gridLineColor;
+                    gridCtx.strokeRect(x, y, colSize, rowSize);
+                    
+                    // 如果是特殊列，绘制蓝色竖线
+                    if(window.specialLine.includes(colIndex)) {
+                        gridCtx.strokeStyle = 'blue';
+                        gridCtx.lineWidth = 3;
+                        gridCtx.beginPath();
+                        gridCtx.moveTo(x, y);
+                        gridCtx.lineTo(x, y + rowSize);
+                        gridCtx.stroke();
+                    }
+                });
+
+                // 绘制符号 - 只在有内容时绘制
                 rowData.forEach((colData, colIndex) => {
                     if (!colData) {
                         return;
                     }
-                    const symbolData = symbolMapping.find((item) => item[0] === colData);
-                    const [symbol, displayChar, font, num = 1] = symbolData;
-                    const xaxis = colIndex * colSize + (colSize * num) / 2;
-                    gridCtx.font = `${colSize - 4}px ${font}`;
                     gridCtx.fillStyle = "black";
                     gridCtx.textAlign = "center";
                     gridCtx.textBaseline = "middle";
-                    gridCtx.fillText(displayChar, xaxis, yaxis);
+                    let xaxis = colIndex * colSize + (colSize) / 2;
+                    if(!isNaN(colData)) {
+                        gridCtx.font = `${colSize - 10}px -apple-system`;
+                        gridCtx.fillStyle = "red";
+                        gridCtx.fillText(colData, xaxis, yaxis);
+                    } else {
+                        const symbolData = symbolMapping.find((item) => item[0] === colData);
+                        const [symbol, displayChar, font, num = 1] = symbolData;
+                        xaxis = colIndex * colSize + (colSize * num) / 2;
+                        gridCtx.font = `${colSize - 4}px ${font}`;
+                        gridCtx.fillText(displayChar, xaxis, yaxis);
+                    }
                 });
+
                 gridCtx.font = `${colSize - 10}px -apple-system`;
                 gridCtx.fillStyle = "red";
                 gridCtx.fillText(rowIndex + 1, (rowData.length + 0.5) * colSize, yaxis);
@@ -201,9 +125,26 @@
                 drawRow(currentRow);
                 drawRow(currentRow - 1);
             }
+            function initChart(type = 'dove') {
+                let { rows, cols, gridData, specialLine} = type === 'dove' ? formatDove() : formatEmily();
+                window.specialLine = specialLine;
+                console.log(gridData)
+                currentRow = 0;
+                canvas.width = cols * colSize;
+                canvas.height = rows * rowSize;
+                gridLine.width = cols * colSize;
+                gridLine.height = rows * rowSize;
+
+                drawFont(gridData);
+            }
+
+            function chartChange(val) {
+                initChart(val);
+            }
+
+
             window.onload = function () {
-                drawGrid();
-                drawFont();
+                initChart('emily');
             };
         </script>
     </body>

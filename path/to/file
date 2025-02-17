@@ -1,0 +1,17 @@
+def drawlintfont(self, painter):
+    # ... existing code ...
+    
+    # 添加画网格线的逻辑
+    pen = QPen(QColor(200, 200, 200))  # 使用浅灰色
+    pen.setWidth(1)
+    painter.setPen(pen)
+    
+    # 画垂直线
+    for x in range(0, self.width(), self.grid_size):
+        painter.drawLine(x, 0, x, self.height())
+    
+    # 画水平线
+    for y in range(0, self.height(), self.grid_size):
+        painter.drawLine(0, y, self.width(), y)
+        
+    # ... existing code ... 

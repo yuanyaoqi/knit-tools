@@ -1,0 +1,74 @@
+#controls {
+    margin-bottom: 10px;
+}
+
+#gridCanvas {
+    border: 1px solid black;
+}
+
+body {
+    /* background: #181a1b; */
+}
+
+@font-face {
+    font-family: "knitDash";
+    src: url("./StitchMasteryDash.ttf");
+}
+
+@font-face {
+    font-family: "knitDashCable";
+    src: url("./StitchMasteryDashCable.ttf");
+}
+
+@font-face {
+    font-family: "knitDashCableEH";
+    src: url("./StitchMasteryDashCableEH.ttf");
+}
+
+@font-face {
+    font-family: "knitDot";
+    src: url("./StitchMasteryDot.ttf");
+}
+
+@font-face {
+    font-family: "knitDotCable";
+    src: url("./StitchMasteryDotCable.ttf");
+}
+
+@font-face {
+    font-family: "knitDotCableEH";
+    src: url("./StitchMasteryDotCableEH.ttf");
+}
+
+.test {
+    font-family: knitDashCableEH;
+    color: white;
+    font-size: 12px;
+}
+
+.canvas-section {
+    padding: 10px;
+    position: absolute;
+}
+
+#canvas {
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+#gridLine {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.next-button {
+    width: 100px;
+    height: 50px;
+    position: fixed;
+    z-index: 2000;
+    right: 200px;
+    bottom: 100px;
+}
