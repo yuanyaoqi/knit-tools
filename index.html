@@ -11,7 +11,7 @@
             <option value="emily">艾米丽帽子</option>
             <option value="dove">多芬围巾</option>
         </select>
-        <button onclick="nextRow()" class="next-button">下一行</button>
+        <button onclick="nextRow()" class="next-button" id="draggableButton">下一行</button>
         <div class="canvas-section">
             <canvas id="canvas"></canvas>
             <canvas id="gridLine"></canvas>
@@ -23,6 +23,7 @@
             <p style="font-family: knitDot">!</p>
         </div>
         <script src="./utils.js"></script>
+        <script src="script.js"></script>
         <script>
             const canvas = document.getElementById("canvas");
             const ctx = canvas.getContext("2d");
@@ -121,15 +122,16 @@
                 ctx.fillRect(0, y, canvas.width, rowSize);
             }
             function nextRow() {
-                currentRow++;
+                currentRow += 2;
                 drawRow(currentRow);
                 drawRow(currentRow - 1);
+                drawRow(currentRow - 2);
             }
             function initChart(type = 'dove') {
                 let { rows, cols, gridData, specialLine} = type === 'dove' ? formatDove() : formatEmily();
                 window.specialLine = specialLine;
                 console.log(gridData)
-                currentRow = 0;
+                currentRow = -1;
                 canvas.width = cols * colSize;
                 canvas.height = rows * rowSize;
                 gridLine.width = cols * colSize;
